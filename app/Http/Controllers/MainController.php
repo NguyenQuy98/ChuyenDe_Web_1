@@ -62,6 +62,9 @@ class MainController extends Controller
                 'updated_at'=>date('Y-m-d H:i:s'),
                 'phone'=>$request->Phone,
                 'gender'=> 1,
+                'active' => 1,
+                'attempt' => 0,
+                'last_access'=>date('Y-m-d H:i:s'),
             ]);
         return redirect()->route('register')->with('success','Đăng ký thành công');
 
