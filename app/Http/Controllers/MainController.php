@@ -153,7 +153,8 @@ class MainController extends Controller
     public function edit_profile_post(Request $request){
 
         if($request->password != null){
-            DB::table('users')->update([
+
+            DB::table('users')->where('id',$request->id)->update([
                 'password'=>bcrypt($request->password),
                 // 'email'=>$request->email,
                 'phone'=>$request->tel,
@@ -162,7 +163,7 @@ class MainController extends Controller
             ]);
         }
         else{
-            DB::table('users')->update([
+            DB::table('users')->where('id',$request->id)->update([
                 // 'email'=>$request->email,
                 'phone'=>$request->tel,
                 'name'=>$request->name,

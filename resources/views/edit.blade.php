@@ -20,6 +20,7 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                     <form id="edit-form" role="form" method="post" action="{{route('edit-profile-post') }}">
+                    <input type="hidden" name="id" value="{{$user->id}}">
                         {{ csrf_field() }}
                             <div class="form-group">
                                 <label class="control-label">Email Address:</label>
