@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Models\City;
 use App\Http\Models\Flightbooking;
 use Illuminate\Http\Request;
+use App\City;
 
 class HomeController extends Controller
 {
@@ -17,12 +17,6 @@ class HomeController extends Controller
     {
 //        $this->middleware('auth');
     }
-
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $cities = City::all();

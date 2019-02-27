@@ -1,35 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Flights - Worldskills Travel</title>
-    <link rel="stylesheet" type="text/css" href="assets/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="assets/style.css">
-</head>
-<body>
-<div class="wrapper">
-    <header>
-        <nav class="navbar-default navbar-static-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a href="{{route('home')}}" class="navbar-brand">Worldskills Travel</a>
-                </div>
-                <div class="collapse navbar-collapse" id="main-navbar">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#">Welcome message</a></li>
-                        <li><a href="{{route('home')}}">Flights</a></li>
-                        <li><a href="{{route('login')}}">Log In</a></li>
-                        <li><a href="{{route('register')}}">Register</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
+@extends('layout.main')
+@section('content')
+
     <main>
         <div class="container">
             <section>
@@ -199,16 +170,5 @@
             </section>
         </div>
     </main>
-    <footer>
-        <div class="container">
-            <p class="text-center">
-                Copyright &copy; 2017 | All Right Reserved
-            </p>
-        </div>
-    </footer>
-</div>
-<!--scripts-->
-<script type="text/javascript" src="assets/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="assets/bootstrap/js/bootstrap.min.js"></script>
-</body>
-</html>
+
+ @endsection
