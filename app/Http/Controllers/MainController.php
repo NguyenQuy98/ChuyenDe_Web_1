@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\MessageBag;
 use App\City;
 use App\User;
+use Carbon\Carbon;
 use Validator;
 
 class MainController extends Controller
@@ -70,6 +71,7 @@ class MainController extends Controller
 
     }
     public function postLogin(Request $request){
+
         $rules = [
     		'email' =>'required|email',
     		'password' => 'required|min:5'
@@ -82,11 +84,24 @@ class MainController extends Controller
     	];
     	$validator = Validator::make($request->all(), $rules, $messages);
         $user_attempt = DB::table('users')->where('email',$request->email)->first();
+
+
+
+
         if($user_attempt){
             if($user_attempt->active == 0){
+                $minutes = round((time() - strtotime( $user_attempt->last_access))/60);
+                if($minutes >= 30)
+                {
+                    DB::table('users')
+                        ->where('email',$request->email)
+                        ->update([
+                            'attempt'=>0,
+                            'active'=>1,
+                        ]);
+                }
                 $errors = new MessageBag(['errorlogin' => 'Tài khoản đã bị khóa, vui lòng thử lại sau']);
                 return redirect()->back()->withInput()->withErrors($errors);
-                // return redirect()->route('login-get')->withErrors(['locked_msg'=>'Tài khoản đã bị khóa, vui lòng thử lại sau']);
             }
         }
     	if ($validator->fails()) {
@@ -97,6 +112,11 @@ class MainController extends Controller
 
             if( Auth::attempt(['email' => $email, 'password' =>$password])) {
                 $cities = City::all();
+                DB::table('users')
+                        ->where('email',$request->email)
+                        ->update([
+                            'attempt'=>0,
+                        ]);
                 return view('home',[
                     'cities' => $cities,
                 ]);
@@ -108,7 +128,7 @@ class MainController extends Controller
                         'last_access'=>date('Y-m-d H:i:s'),
                         'attempt' => $user_attempt->attempt+1
                     ]);
-                    if($user_attempt->attempt+1 >= 3){
+                    if($user_attempt->attempt+1 >= 2){
                         DB::table('users')
                         ->where('email',$request->email)
                         ->update([
