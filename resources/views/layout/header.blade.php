@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Flights - Worldskills Travel</title>
-    <link rel="stylesheet" type="text/css" href="assets/bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="assets/style.css">
+    <link rel="stylesheet" type="text/css" href="{{asset('assets/bootstrap/css/bootstrap.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{asset('assets/style.css')}}">
 </head>
 <body>
 <div class="wrapper">
@@ -23,7 +23,8 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="#">Welcome message</a></li>
                         <li><a href="{{route('home')}}">Flights</a></li>
-
+                        <li><a href="{{route('airportlist')}}">Airport</a></li>
+                        <li><a href="{{route('airlinelist')}}">Airline</a></li>
                         @if (Auth::check())
                     <li style="font-weight:bold;font-size:20px;color:#000"><a href="{{route('edit')}}">{{Auth::user()->name}}</a></li>
                     <li><a href="{{route('logout')}}">Logout</a></li>

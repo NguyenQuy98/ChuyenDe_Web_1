@@ -7,6 +7,7 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <form role="form" action="{{route('flight-list')}}" id = "search">
+                            @csrf
                             <div class="row">
                                 <div class="col-sm-4">
                                     <h4 class="form-heading">1. Flight Destination</h4>
@@ -39,11 +40,11 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="radio">
-                                            <label><input type="radio" name="flight_type" checked value="one-way">One Way</label>
-                                            <label><input type="radio" name="flight_type" value="return">Return</label>
+                                            <label><input type="radio" id="One_Way" name="flight_type" checked value="one-way">One Way</label>
+                                            <label><input type="radio" id="Return" name="flight_type" value="return">Return</label>
                                         </div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group" id="Return_input">
                                         <label class="control-label">Return: </label>
                                         <input id="return_day" name="return_day" type="date" class="form-control" placeholder="Choose Return Date">
                                     </div>
@@ -52,7 +53,7 @@
                                     <h4 class="form-heading">3. Search Flights</h4>
                                     <div class="form-group">
                                         <label class="control-label">Total Person: </label>
-                                        <select id="total-person" name="total-person" class="form-control">
+                                        <select id="total-person" name="total_person" class="form-control">
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
@@ -68,9 +69,9 @@
                                     <div class="form-group">
                                         <label class="control-label">Flight Class: </label>
                                         <select class="form-control" id="flight-class" name="flight-class">
-                                            <option value="economy">Economy</option>
-                                            <option value="business">Business</option>
-                                            <option value="premium-economy">Premium Economy</option>
+                                            @foreach ($Flight_class as $Flight_class)
+                                                <option value="{{$Flight_class->id}}">{{$Flight_class->name}}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                     <div class="form-group">

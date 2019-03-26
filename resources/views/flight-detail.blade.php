@@ -4,31 +4,38 @@
     <main>
         <div class="container">
             <section>
-                <h2>UAE - Abu Dhabi (AUH) <i class="glyphicon glyphicon-arrow-right"></i> Indonesia - Jakarta (CGK)</h2>
+            @foreach($airway as $item)
+                <h2>@foreach($city_from as $city_from)
+                    {{$city_from->name}} ({{$city_from->code}})
+                    @endforeach
+                    <i class="glyphicon glyphicon-arrow-right"></i>
+                    @foreach($city_to as $city_to)
+                     {{$city_to->name}} ({{$city_to->code}})
+                    @endforeach</h2>
                 <article>
                     <div class="panel panel-default">
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <h4><strong>Qatar Airways</strong></h4>
+                                    <h4><strong>{{$item->name}}</strong></h4>
                                     <div class="row">
                                         <div class="col-sm-3">
                                             <label class="control-label">From:</label>
-                                            <div><big class="time">18:45</big></div>
-                                            <div><span class="place">Jakarta (CGK)</span></div>
+                                            <div><big class="time">{{$item->hours_from}}</big></div>
+                                            <div><span class="place">{{$city_from->name}} ({{$city_from->code}})</span></div>
                                         </div>
                                         <div class="col-sm-3">
                                             <label class="control-label">To:</label>
-                                            <div><big class="time">02:55</big></div>
-                                            <div><span class="place">Abu Dhabi (AUH)</span></div>
+                                            <div><big class="time">{{$item->hours_to}}</big></div>
+                                            <div><span class="place">{{$city_to->name}} ({{$city_to->code}})</span></div>
                                         </div>
                                         <div class="col-sm-3">
                                             <label class="control-label">Duration:</label>
-                                            <div><big class="time">11h 10m</big></div>
-                                            <div><strong class="text-danger">1 Transit</strong></div>
+                                            <div><big class="time">{{$item->Duration}}</big></div>
+                                            <div><strong class="text-danger">{{$item->Transit}} Transit</strong></div>
                                         </div>
                                         <div class="col-sm-3 text-right">
-                                            <h3 class="price text-danger"><strong>IDR8.265.550,00</strong></h3>
+                                            <h3 class="price text-danger"><strong>{{$item->price}}</strong></h3>
                                             <div>
                                                 <a href="{{route('flight-book')}}" class="btn btn-primary">Choose</a>
                                             </div>
@@ -38,25 +45,31 @@
                                         <li class="active"><a data-toggle="tab" href="#flight-detail-tab">Flight Details</a></li>
                                         <li><a data-toggle="tab" href="#flight-price-tab">Price Details</a></li>
                                     </ul>
+                                    @foreach($transit as $transit)
                                     <div class="tab-content">
                                         <div id="flight-detail-tab" class="tab-pane fade in active">
                                             <ul class="list-group">
                                                 <li class="list-group-item">
                                                     <h5>
-                                                        <strong class="airline">Qatar Airways QR-957</strong>
+                                                        <strong class="airline">{{$transit->name_transit}}</strong>
                                                         <p><span class="flight-class">Economy</span></p>
                                                     </h5>
                                                     <div class="row">
                                                         <div class="col-sm-4">
                                                             <div class="row">
                                                                 <div class="col-sm-4">
-                                                                    <div><big class="time">18:45</big></div>
+                                                                    <div><big class="time">{{$transit->time_from}}</big></div>
                                                                     <div><small class="date">29 Apr 2017</small></div>
                                                                 </div>
+
                                                                 <div class="col-sm-6">
-                                                                    <div><span class="place">Jakarta (CGK)</span></div>
+                                                                    <div><span class="place">
+                                                                    @foreach($city_Transit_from as $Transit_from)
+                                                                    {{$Transit_from->name}} ({{$Transit_from->code}})
+                                                                    @endforeach</span></div>
                                                                     <div><small class="airport">Soekarno Hatta Intl Airport</small></div>
                                                                 </div>
+
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-1">
@@ -65,65 +78,32 @@
                                                         <div class="col-sm-4">
                                                             <div class="row">
                                                                 <div class="col-sm-4">
-                                                                    <div><big class="time">23:20</big></div>
+                                                                    <div><big class="time">{{$transit->time_to}}</big></div>
                                                                     <div><small class="date">29 Apr 2017</small></div>
                                                                 </div>
+
                                                                 <div class="col-sm-6">
-                                                                    <div><span class="place">Doha (DOH)</span></div>
+                                                                    <div><span class="place">
+                                                                    @foreach($city_Transit_to as $Transit_to)
+                                                                        {{$Transit_to->name}} ({{$Transit_to->code}})
+                                                                    @endforeach</span></div>
                                                                     <div><small class="airport">Doha Hamad International Airport</small></div>
                                                                 </div>
+
                                                             </div>
                                                         </div>
                                                         <div class="col-sm-3 text-right">
                                                             <label class="control-label">Duration:</label>
-                                                            <div><strong class="time">7h 35m</strong></div>
+                                                            <div><strong class="time">{{$transit->Duration}}</strong></div>
                                                         </div>
                                                     </div>
                                                 </li>
                                                 <li class="list-group-item list-group-item-warning">
                                                     <ul>
-                                                        <li>Transit for 1h 30m in Doha (DOH)</li>
+                                                        <li>Transit for {{$transit->Duration}} in {{$Transit_to->name}} ({{$Transit_to->code}})</li>
                                                     </ul>
                                                 </li>
-                                                <li class="list-group-item">
-                                                    <h5>
-                                                        <strong class="airline">Qatar Airways QR-1052</strong>
-                                                        <p><span class="flight-class">Economy</span></p>
-                                                    </h5>
-                                                    <div class="row">
-                                                        <div class="col-sm-4">
-                                                            <div class="row">
-                                                                <div class="col-sm-4">
-                                                                    <div><big class="time">00:50</big></div>
-                                                                    <div><small class="date">30 Apr 2017</small></div>
-                                                                </div>
-                                                                <div class="col-sm-6">
-                                                                    <div><span class="place">Doha (DOH)</span></div>
-                                                                    <div><small class="airport">Doha Hamad International Airport</small></div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-1">
-                                                            <i class="glyphicon glyphicon-arrow-right"></i>
-                                                        </div>
-                                                        <div class="col-sm-4">
-                                                            <div class="row">
-                                                                <div class="col-sm-4">
-                                                                    <div><big class="time">02:55</big></div>
-                                                                    <div><small class="date">30 Apr 2017</small></div>
-                                                                </div>
-                                                                <div class="col-sm-6">
-                                                                    <div><span class="place">Abu Dhabi (AUH)</span></div>
-                                                                    <div><small class="airport">Abu Dhabi Intl</small></div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-sm-3 text-right">
-                                                            <label class="control-label">Duration:</label>
-                                                            <div><strong class="time">2h 5m</strong></div>
-                                                        </div>
-                                                    </div>
-                                                </li>
+
                                             </ul>
                                         </div>
                                         <div id="flight-price-tab" class="tab-pane fade">
@@ -162,11 +142,13 @@
                                             </ul>
                                         </div>
                                     </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
                     </div>
                 </article>
+                @endforeach
             </section>
         </div>
     </main>

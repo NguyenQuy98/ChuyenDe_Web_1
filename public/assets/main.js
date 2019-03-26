@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
     $('#btnSearch').on('click',function (e) {
-        e.preventDefault()
+        e.preventDefault();
         var from = $('#from option:selected').val();
         var to = $('#to option:selected').val();
         var departure = $('#departure').val()
@@ -9,8 +9,7 @@ $(document).ready(function () {
         var return_day = $('#return_day').val();
         var flight_class = $('#flight-class option:selected').val();
         var total_person = $('#total-person option:selected').val();
-        // console.log(`${from} ${to} ${departure} ${way_type} ${return_day} ${flight_class} ${total_person} `)
-        if (from  && to  && departure  && way_type  && return_day  && flight_class  && total_person){
+        if (from  && to  && departure  && way_type   && flight_class  && total_person){
             if (from == to){
                 swal("Cảnh báo", "Nơi đi không được trùng nơi đến", "error");
             }
@@ -22,6 +21,7 @@ $(document).ready(function () {
         {
             swal("Thiếu thông tin", "Vui lòng nhập đủ thông tin", "error");
         }
+
     })
 
     $('#login').on('click',function (e) {
@@ -42,6 +42,13 @@ $(document).ready(function () {
             swal("Thiếu thông tin", "Vui lòng nhập đủ thông tin", "error");
         }
     })
+
+    $( "#One_Way" ).click(function() {
+        document.getElementById('Return_input').style.display = 'none';
+    });
+    $( "#Return" ).click(function() {
+        document.getElementById('Return_input').style.display = 'block';
+    });
     // $('#Register').on('click',function (e) {
     //     e.preventDefault()
     //     var email = $("#email").val();
@@ -63,4 +70,7 @@ $(document).ready(function () {
     //         swal("Thiếu thông tin", "Vui lòng nhập đủ thông tin", "error");
     //     }
     // })
+
+
+
 })

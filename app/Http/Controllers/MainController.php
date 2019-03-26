@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\MessageBag;
 use App\City;
 use App\User;
+use App\Flight_class;
+use App\Airways;
+use App\User_booking;
+use App\Transit;
 use Carbon\Carbon;
 use Validator;
 
@@ -17,21 +21,52 @@ class MainController extends Controller
     public function main()
     {
         $cities = City::all();
+        $Flight_class = Flight_class::all();
         return view('home',[
             'cities' => $cities,
+            'Flight_class'=> $Flight_class,
         ]);
     }
-    public function list()
+    public function list(Request $request)
     {
-        return view('flight-list');
+        $airway = new Airways;
+        $city_from =new City;
+        $city_to = new City;
+        return view('flight-list',[
+            'airway' => $airway->from_to($request->from,$request->to),
+            'city_from'=>$city_from->where_city($request->from),
+            'city_to'=>$city_to->where_city($request->to),
+        ]);
     }
-    public function book()
+    public function book(Request $request)
     {
         return view('flight-book');
     }
-    public function detail()
+    public function postbook(Request $request)
     {
-        return view('flight-detail');
+        $name = $request->last_name . $request->first_name;
+        $user_booking = new User_booking;
+        $user_booking->add($request->email,$name,$request->phone,$request->payment_method,$request->number,$request->name_Card,$request->CCV_Code);
+
+        return redirect()->route('flight-book')->with('success','Đăng ký thành công');
+    }
+    public function detail($id,Request $request)
+    {
+
+        $airway = new Airways;
+        $city_from =new City;
+        $city_to = new City;
+        $transit = new Transit;
+        $city_Transit_from = new City;
+        $city_Transit_to = new City;
+        return view('flight-detail',[
+            'airway' => $airway->where_id($id),
+            'city_from'=>$city_from->where_city(1),
+            'city_to'=>$city_to->where_city(2),
+            'transit'=>$transit->where_transit(0),
+            'city_Transit_from'=>$city_Transit_from->where_city(3),
+            'city_Transit_to'=>$city_Transit_to->where_city(4),
+        ]);
     }
     public function login()
     {
@@ -54,24 +89,13 @@ class MainController extends Controller
         //     return redirect()->route('register')->withErrors($validatedData);
         // }
         // else{
-            User::insert([
-                'email'=>$request->email,
-
-                'password'=>bcrypt($request->password),
-                'name'=>$request->name,
-                'created_at'=>date('Y-m-d H:i:s'),
-                'updated_at'=>date('Y-m-d H:i:s'),
-                'phone'=>$request->Phone,
-                'gender'=> 1,
-                'active' => 1,
-                'attempt' => 0,
-                'last_access'=>date('Y-m-d H:i:s'),
-            ]);
+            $user = new User;
+            $user->add($request->email,$request->password,$request->name,$request->Phone);
         return redirect()->route('register')->with('success','Đăng ký thành công');
 
     }
     public function postLogin(Request $request){
-
+        $user = new User;
         $rules = [
     		'email' =>'required|email',
     		'password' => 'required|min:5'
@@ -83,22 +107,13 @@ class MainController extends Controller
     		'password.min' => 'Mật khẩu phải chứa ít nhất 5 ký tự',
     	];
     	$validator = Validator::make($request->all(), $rules, $messages);
-        $user_attempt = DB::table('users')->where('email',$request->email)->first();
-
-
-
-
+        $user_attempt = $user->where_user($request->email);
         if($user_attempt){
             if($user_attempt->active == 0){
                 $minutes = round((time() - strtotime( $user_attempt->last_access))/60);
                 if($minutes >= 30)
                 {
-                    DB::table('users')
-                        ->where('email',$request->email)
-                        ->update([
-                            'attempt'=>0,
-                            'active'=>1,
-                        ]);
+                    $user->update_user($request->email);
                 }
                 $errors = new MessageBag(['errorlogin' => 'Tài khoản đã bị khóa, vui lòng thử lại sau']);
                 return redirect()->back()->withInput()->withErrors($errors);
@@ -112,28 +127,17 @@ class MainController extends Controller
 
             if( Auth::attempt(['email' => $email, 'password' =>$password])) {
                 $cities = City::all();
-                DB::table('users')
-                        ->where('email',$request->email)
-                        ->update([
-                            'attempt'=>0,
-                        ]);
+                $user->update_attempt($request->email,0);
+                $Flight_class = Flight_class::all();
                 return view('home',[
                     'cities' => $cities,
+                    'Flight_class'=> $Flight_class,
                 ]);
             } else {
                 if($user_attempt){
-                    DB::table('users')
-                    ->where('email',$request->email)
-                    ->update([
-                        'last_access'=>date('Y-m-d H:i:s'),
-                        'attempt' => $user_attempt->attempt+1
-                    ]);
+                    $user->update_last_access($request->email,$user_attempt->attempt+1);
                     if($user_attempt->attempt+1 >= 2){
-                        DB::table('users')
-                        ->where('email',$request->email)
-                        ->update([
-                            'active'=>0,
-                        ]);
+                        $user->update_active($request->email,0);
                     }
                 }
                 $errors = new MessageBag(['errorlogin' => 'Email hoặc mật khẩu không đúng']);
@@ -152,23 +156,12 @@ class MainController extends Controller
     }
     public function edit_profile_post(Request $request){
 
+        $user = new User;
         if($request->password != null){
-
-            DB::table('users')->where('id',$request->id)->update([
-                'password'=>bcrypt($request->password),
-                // 'email'=>$request->email,
-                'phone'=>$request->tel,
-                'name'=>$request->name,
-                'updated_at'=>date('Y-m-d H:i:s'),
-            ]);
+            $user->update_password($request->id,$request->name,$request->password,$request->tel);
         }
         else{
-            DB::table('users')->where('id',$request->id)->update([
-                // 'email'=>$request->email,
-                'phone'=>$request->tel,
-                'name'=>$request->name,
-                'updated_at'=>date('Y-m-d H:i:s'),
-            ]);
+            $user->update_password_null($request->id,$request->name,$request->tel);
         }
 
         return redirect()->route('edit')->with('success',' Cập nhật thành công');

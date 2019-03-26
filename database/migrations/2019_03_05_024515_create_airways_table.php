@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateBasicInformationsTable extends Migration
+class CreateAirwaysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,17 @@ class CreateBasicInformationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('_basic_informations', function (Blueprint $table) {
+        Schema::create('airways', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('from');
-            $table->string('to');
-            $table->date('duration');
+            $table->string('name');
+            $table->string('hours_from');
+            $table->string('hours_to');
+            $table->integer('id_city_from');
+            $table->integer('id_city_to');
             $table->integer('transit');
+            $table->integer('price');
+            $table->integer('date_Of_Flight');
+            $table->integer('total');
             $table->timestamps();
         });
     }
@@ -30,6 +35,6 @@ class CreateBasicInformationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('_basic_informations');
+        Schema::dropIfExists('airways');
     }
 }
