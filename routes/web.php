@@ -25,5 +25,14 @@ Route::get('/logout','MainController@logout')->name('logout');
 Route::get('/edit','MainController@edit_profile')->name('edit');
 Route::post('/edit-profile-post','MainController@edit_profile_post')->name('edit-profile-post');
 
+Route::get('/edit-user','MainController@edit_user')->name('edit-user');
+Route::post('/edit-user-post','MainController@edit_user_post')->name('edit-user-post');
+
+Route::get('airway/','MainController@getAirway')->name('airway');
+
 Route::get('airportlist/','AirportController@index')->name('airportlist');
 Route::get('airlinelist/','AirlineController@index')->name('airlinelist');
+
+
+Route::get('/add-domestic-routes','MainController@add_domestic_routes')->name('add-domestic-routes');
+Route::post('/add-domestic-routes','MainController@flight_create')->name('add-domestic-routes');

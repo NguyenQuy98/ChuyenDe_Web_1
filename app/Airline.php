@@ -32,5 +32,4 @@ class Airline extends Model
     }
 
 
-
 }

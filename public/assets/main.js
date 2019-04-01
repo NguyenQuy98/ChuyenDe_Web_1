@@ -71,6 +71,19 @@ $(document).ready(function () {
     //     }
     // })
 
+    $("#nations").change(function(){
 
+        var nation = $(this).val();
 
+        $.get("/add-domestic-routes/"+ nation,function(data){
+            $("#airlines").empty().append(data);
+        });
+
+    });
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 })
+

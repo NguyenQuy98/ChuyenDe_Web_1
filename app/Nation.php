@@ -30,4 +30,6 @@ class Nation extends Model
         // ->select('nations.id','nations.name as nation_name','nations.code as nation_code','airlines.id','airlines.name as airline_name','airlines.code as airline_code')
         // ->where('airlines.id','<>',null)->get();
     }
+
+
 }

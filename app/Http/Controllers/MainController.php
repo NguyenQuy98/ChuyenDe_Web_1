@@ -13,6 +13,8 @@ use App\Flight_class;
 use App\Airways;
 use App\User_booking;
 use App\Transit;
+use App\Airline;
+use App\Nation;
 use Carbon\Carbon;
 use Validator;
 
@@ -29,6 +31,7 @@ class MainController extends Controller
     }
     public function list(Request $request)
     {
+
         $airway = new Airways;
         $city_from =new City;
         $city_to = new City;
@@ -71,6 +74,67 @@ class MainController extends Controller
     public function login()
     {
         return view('login');
+    }
+    public function getAirway()
+    {
+        $airway = Airways::all();
+        return view('airway', compact('airway'));
+    }
+    public function add_domestic_routes(){
+        $cities = City::all();
+        $nations = Nation::all();
+        $airlines = Airline::all();
+        return view('add-domestic-routes', compact('cities', 'airlines','nations'));
+    }
+    public function flight_create(Request $request){
+
+        $validator = Validator::make($request->all(), [
+
+        ],
+            [
+
+            ]);
+        if($validator->fails()){
+            return redirect()->route('add-domestic-routes')->withErrors($validator)->withInput();
+        }else{
+
+            $city1 = $request->from;
+            $city2 = $request->to;
+            $air = $request->air;
+            if ($city1 == $city2){
+                return redirect()->route('add-domestic-routes')->with('errorND','Nơi đi không được trùng với nơi đến');
+            }else{
+                if (Airways::kiem_tra_bay_noi_dia($city1, $city2)){
+                    if (Airways::kiem_tra_hang_bay_noi_dia($city1, $city2, $air)){
+                        Airways::insertFL($request->all());
+
+                        return redirect()->route('add-domestic-routes')->with('success','Tạo chuyến nội địa thành công');
+                    }else{
+                        return redirect()->route('add-domestic-routes')->with('errorND','Chuyến bay phải do quốc gia đó khai thác');
+                    }
+                }else if (Airways::kiem_tra_bay_xuyen_quoc_gia($city1, $city2)){
+                    Airways::insertFL($request->all());
+                    return redirect()->route('add-domestic-routes')->with('success','Tạo chuyến xuyên quốc gia thành công');
+                }else{
+                    return redirect()->route('add-domestic-routes')->with('errorND','Hai quốc gia không có liên kết');
+                }
+            }
+        }
+    }
+
+    // public function getAriline($id){
+    //     $ariline = Ariline::find($nation_id)->district->sortBy('name');
+    //     $array = "<option>--Chọn Tên hãng bay --</option>";
+    //     foreach($ariline as $item)
+	// 	{
+	// 		$array .="<option value='".$item['id']."'>".$item['name']."</option>";
+	// 	}
+	// 	echo $array;
+    // }
+    public function post_add_domestic_routes(){
+        $cities = City::all();
+        $airlines = Airline::all();
+        return view('add-domestic-routes', compact('cities', 'airlines'));
     }
     public function register()
     {
@@ -148,7 +212,23 @@ class MainController extends Controller
     }
     public function edit_profile(){
         $user = Auth::user();
+
         return view('edit',compact('user'));
+    }
+    public function edit_user(){
+        $user = Auth::user();
+
+        $user_booking = User_booking::where('id_user',$user->id)->get();
+        // dd($user_booking);
+        return view('edit-user',compact('user','user_booking'));
+    }
+    public function edit_user_post(Request $request){
+
+        $user_booking = new User_booking;
+        $user_booking->updateUser($request->id,$request->email,$request->name,$request->tel,$request->price,$request->Card_Number,$request->Name_On_Card,$request->CCV_Code);
+
+
+        return redirect()->route('edit-user')->with('success',' Cập nhật thành công');
     }
     public function logout(){
         Auth::logout();
